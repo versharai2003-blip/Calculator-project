@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Calculator</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #e9e3ff;
+  font-family: Arial;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.calculator {
+  background: #211b35;
+  padding: 22px;
+  border-radius: 20px;
+  width: 320px;
+}
+
+h2 {
+  color: white;
+  text-align: center;
+}
+
+#display {
+  width: 100%;
+  height: 65px;
+  font-size: 28px;
+  text-align: right;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: none;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+button {
+  height: 58px;
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  background: #eee9fa;
+}
+
+.operator {
+  background: #a58bea;
+  color: white;
+}
+
+.clear {
+  background: #ff7777;
+  color: white;
+}
+
+.equal {
+  background: #6acb9b;
+  grid-row: span 2;
+}
+
+.delete {
+  background: #f3a85b;
+}
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+<h2>My Calculator</h2>
+
+<input id="display" value="0" readonly>
+
+<div class="buttons">
+
+<button class="clear" onclick="clearAll()">C</button>
+<button class="delete" onclick="del()">DEL</button>
+<button class="operator" onclick="choose('/')">÷</button>
+<button class="operator" onclick="choose('*')">×</button>
+
+<button onclick="number('7')">7</button>
+<button onclick="number('8')">8</button>
+<button onclick="number('9')">9</button>
+<button class="operator" onclick="choose('-')">−</button>
+
+<button onclick="number('4')">4</button>
+<button onclick="number('5')">5</button>
+<button onclick="number('6')">6</button>
+<button class="operator" onclick="choose('+')">+</button>
+
+<button onclick="number('1')">1</button>
+<button onclick="number('2')">2</button>
+<button onclick="number('3')">3</button>
+<button class="equal" onclick="calculate()">=</button>
+
+<button onclick="number('0')">0</button>
+<button onclick="decimal()">.</button>
+
+</div>
+</div>
+
+<script>
+
+let current = "0";
+let first = null;
+let operator = null;
+let reset = false;
+
+const display = document.getElementById("display");
+
+function update() {
+  display.value = current;
+}
+
+function number(n) {
+  if (reset || current === "Error") {
+    current = n;
+    reset = false;
+  } else if (current === "0") {
+    current = n;
+  } else if (current.length < 12) {
+    current += n;
+  }
+  update();
+}
+
+function choose(op) {
+  if (current === "Error") return;
+  first = Number(current);
+  operator = op;
+  reset = true;
+}
+
+function calculate() {
+  if (operator === null || first === null) return;
+
+  let second = Number(current);
+  let result;
+
+  if (operator === "+") result = first + second;
+  if (operator === "-") result = first - second;
+  if (operator === "*") result = first * second;
+
+  if (operator === "/") {
+    result = second === 0 ? "Error" : first / second;
+  }
+
+  current = result === "Error"
+    ? "Error"
+    : String(Number(result.toPrecision(10)));
+
+  first = null;
+  operator = null;
+  reset = true;
+  update();
+}
+
+function clearAll() {
+  current = "0";
+  first = null;
+  operator = null;
+  reset = false;
+  update();
+}
+
+function del() {
+  if (reset || current === "Error") {
+    current = "0";
+    reset = false;
+  } else {
+    current = current.slice(0, -1) || "0";
+  }
+  update();
+}
+
+function decimal() {
+  if (reset || current === "Error") {
+    current = "0.";
+    reset = false;
+  } else if (!current.includes(".")) {
+    current += ".";
+  }
+  update();
+}
+
+</script>
+
+</body>
+</html>
